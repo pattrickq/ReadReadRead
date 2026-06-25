@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ReadReadRead — App Screens</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@300;400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="ci/tokens.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,7 +25,7 @@
 
   body {
     background: #EDEAE4;
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-body);
     padding: 60px 40px;
     min-height: 100vh;
   }
@@ -70,7 +68,7 @@
   }
   .screen-label {
     font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--ink-4); font-family: 'Noto Serif JP', serif;
+    color: var(--ink-4); font-family: var(--font-small);
   }
 
   /* phone frame */
@@ -94,7 +92,7 @@
     display: flex; justify-content: space-between; align-items: center;
     padding: 14px 24px 0;
     font-size: 11px; font-weight: 500; color: var(--ink-2);
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
   }
   .status-bar .time { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
   .status-icons { display: flex; gap: 5px; align-items: center; }
@@ -113,7 +111,7 @@
   }
   .nav-item {
     display: flex; flex-direction: column; align-items: center; gap: 4px;
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
     font-size: 10px; font-weight: 400; color: var(--ink-4);
     cursor: pointer; padding: 0 8px;
   }
@@ -161,14 +159,14 @@
   .streak-fire { font-size: 18px; }
   .streak-info { flex: 1; }
   .streak-n { font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; color: var(--brown); }
-  .streak-l { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 1px; }
+  .streak-l { font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 1px; }
   .streak-dots { display: flex; gap: 4px; }
   .streak-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--paper-3); }
   .streak-dot.done { background: var(--brown); }
 
   .section-title {
     padding: 18px 22px 10px;
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
     font-size: 11px; font-weight: 400; letter-spacing: 0; color: var(--ink-4);
   }
 
@@ -217,7 +215,7 @@
     border: none; border-radius: 14px;
     padding: 13px;
     width: calc(100% - 44px);
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-body);
     font-size: 13px; font-weight: 500;
     letter-spacing: 0.04em; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -236,7 +234,7 @@
     text-align: center;
   }
   .stat-n { font-family: 'Libre Baskerville', serif; font-size: 20px; font-weight: 700; color: var(--ink); }
-  .stat-l { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 3px; }
+  .stat-l { font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 3px; }
 
   .shelf-row {
     margin: 0 22px;
@@ -319,7 +317,7 @@
   .haptic-badge {
     background: rgba(59,32,16,0.08);
     border-radius: 10px; padding: 4px 10px;
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
     font-size: 11px; font-weight: 400; color: var(--accent-2);
     display: flex; align-items: center; gap: 5px;
   }
@@ -342,7 +340,7 @@
   .ai-info { flex: 1; }
   .ai-name { font-family: 'Libre Baskerville', serif; font-size: 15px; font-weight: 700; color: var(--ink); }
   .ai-mode-tag {
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
     font-size: 11px; font-weight: 400;
     color: var(--accent); margin-top: 1px;
   }
@@ -391,7 +389,7 @@
     font-size: 13px; line-height: 1.6;
   }
   .msg-ai-name {
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
     font-size: 11px; font-weight: 400;
     color: var(--accent); margin-bottom: 6px;
   }
@@ -409,7 +407,7 @@
     flex: 1; background: var(--paper-2);
     border: 1px solid rgba(0,0,0,0.07);
     border-radius: 20px; padding: 9px 14px;
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
     font-size: 12.5px; color: var(--ink-3);
   }
   .chat-send {
@@ -445,7 +443,7 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
   .ring-pct { font-family: 'Libre Baskerville', serif; font-size: 17px; font-weight: 700; color: var(--ink); }
-  .ring-sub { font-family: 'Noto Serif JP', serif; font-size: 10px; font-weight: 400; color: var(--ink-4); margin-top: 1px; }
+  .ring-sub { font-family: var(--font-small); font-size: 10px; font-weight: 400; color: var(--ink-4); margin-top: 1px; }
   .ring-info { flex: 1; }
   .ring-book { font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; }
   .ring-detail { font-size: 11px; color: var(--ink-4); margin-top: 4px; line-height: 1.5; }
@@ -456,7 +454,7 @@
   .cal-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 10px;
-    font-family: 'Noto Serif JP', serif;
+    font-family: var(--font-small);
     font-size: 11px; font-weight: 400; color: var(--ink-4);
   }
   .cal-grid {
@@ -500,7 +498,7 @@
     border-radius: 14px; padding: 12px 10px; text-align: center;
   }
   .lt-n { font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 700; color: var(--ink); }
-  .lt-l { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 3px; }
+  .lt-l { font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 3px; }
 
 </style>
 </head>
