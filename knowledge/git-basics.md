@@ -26,8 +26,9 @@ Git created a hidden `.git` folder inside it — that's where all the history li
 
 ### 2. `git branch -m main`
 By default Git names the first branch `master`. We renamed it to `main` — the modern standard.
+Note: our repo ended up on `master` due to a technical workaround. All pushes go to `master`.
 
-A **branch** is like a parallel version of your project. You start with one (`main`). Later you can create more branches to test ideas without breaking the real thing.
+A **branch** is like a parallel version of your project. You start with one. Later you can create more branches to test ideas without breaking the real thing.
 
 ### 3. `git add landing_page.html app_screens.html`
 We told Git: *"include these two files in the next snapshot."*
@@ -66,7 +67,7 @@ The `-u` means "remember this connection so future pushes are just `git push`."
 
 ## What to do next time we change a file
 
-When Claude updates `landing_page.html` or `app_screens.html`, just say **"commit to git"** and these three commands run:
+When Claude updates any file, just say **"commit to git"** and Claude runs these three commands:
 
 ```bash
 git add .
@@ -78,18 +79,24 @@ git push
 - `git commit -m "..."` = snapshot with a message
 - `git push` = send to GitHub
 
-That's it. Three commands, every time.
+That's it. Three commands, every time. The live site updates automatically within ~1 minute after push.
 
 ---
 
 ## Your live links (GitHub Pages)
 
-Once GitHub Pages is enabled, your files are live at:
+GitHub Pages is enabled on the `master` branch. Your files are live at:
 
 - Landing page: `https://pattrickq.github.io/ReadReadRead/landing_page.html`
 - App screens: `https://pattrickq.github.io/ReadReadRead/app_screens.html`
+- Prototype: `https://pattrickq.github.io/ReadReadRead/prototype/index.html`
+- Style guide: `https://pattrickq.github.io/ReadReadRead/ci/style-guide.html`
 
-GitHub Pages reads your `main` branch and serves the HTML files as real websites. Any time you push a change, the live site updates automatically within ~1 minute.
+**How GitHub Pages works:** it reads your `master` branch and turns every HTML file into a real public website. No server, no cost. Every push automatically updates the live site within ~1 minute. You never need to touch the Pages setting again — just keep pushing.
+
+**To share with anyone** (investors, designers, developers) — just send the link above. No login required to view.
+
+**To open locally** (no internet needed) — drag the HTML file from Finder into your browser, or double-click it.
 
 ---
 
