@@ -1,0 +1,218 @@
+/*
+  ╔══════════════════════════════════════════════════════╗
+  ║   ReadReadRead — Design Tokens                       ║
+  ║   Single source of truth for all design values.      ║
+  ║   Every file in this project imports this.           ║
+  ║   Change here → changes everywhere.                  ║
+  ╚══════════════════════════════════════════════════════╝
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@300;400;500;600&display=swap');
+
+:root {
+
+  /* ── COLOUR: Base surfaces ── */
+  --paper:      #FDFCF8;   /* primary background — warm white */
+  --paper-2:    #F7F3EC;   /* cards, elevated surfaces */
+  --paper-3:    #EDE8DF;   /* subtle fills, inactive states */
+  --paper-4:    #E2DDD4;   /* dividers, borders */
+
+  /* ── COLOUR: Ink (text) ── */
+  --ink:        #1A1814;   /* primary text */
+  --ink-2:      #3A3730;   /* secondary text */
+  --ink-3:      #6E6A62;   /* body text, descriptions */
+  --ink-4:      #B0ABA2;   /* labels, placeholders, muted */
+
+  /* ── COLOUR: Brand ── */
+  --accent:     #7A6248;   /* warm brown — links, highlights */
+  --accent-2:   #5C4A35;   /* darker brown — hover states */
+  --brown:      #3B2010;   /* CTA buttons, strong emphasis */
+
+  /* ── COLOUR: Semantic ── */
+  --green:      #4A7C59;   /* success, spoiler shield */
+  --blue:       #4A6C8C;   /* info */
+  --red:        #8C4A4A;   /* error, warning */
+
+  /* ── COLOUR: Glass / Frosted surfaces ── */
+  --g-bg:          rgba(255,255,255,0.42);
+  --g-bg-mid:      rgba(255,255,255,0.58);
+  --g-bg-full:     rgba(245,241,234,0.72);   /* warm, not pure white */
+  --g-border:      rgba(210,200,185,0.55);
+  --g-shine:       inset 0 1px 0 rgba(255,255,255,0.60);
+  --g-shadow:      0 1px 4px rgba(60,50,30,0.06);
+  --g-shadow-raised: 0 4px 20px rgba(60,50,30,0.08), 0 1px 4px rgba(60,50,30,0.05);
+  --blur:          blur(22px) saturate(1.6);
+
+
+  /* ── TYPOGRAPHY: Font families ── */
+  --font-display: 'Libre Baskerville', Georgia, serif;
+  /* Use for: headings h1–h3, brand mark, prices, large numbers */
+
+  --font-body:    'Noto Serif JP', 'Noto Serif', serif;
+  /* Use for: body copy, UI labels, buttons, inputs, captions */
+
+  /* RULE: No third font. If unsure, use --font-body. */
+
+
+  /* ── TYPOGRAPHY: Scale ── */
+  --text-xs:    10px;   /* fine print, badges */
+  --text-sm:    12px;   /* captions, secondary labels */
+  --text-base:  14px;   /* body text */
+  --text-md:    16px;   /* slightly larger body */
+  --text-lg:    18px;   /* sub-headings */
+  --text-xl:    22px;   /* section headings */
+  --text-2xl:   28px;   /* page headings */
+  --text-3xl:   36px;   /* hero headings */
+  --text-4xl:   clamp(32px, 5vw, 52px);  /* display / marketing */
+
+  /* ── TYPOGRAPHY: Weights ── */
+  --weight-light:   300;
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-bold:    700;
+
+  /* ── TYPOGRAPHY: Line heights ── */
+  --leading-tight:  1.2;
+  --leading-snug:   1.4;
+  --leading-normal: 1.65;
+  --leading-loose:  1.85;
+
+  /* ── TYPOGRAPHY: Letter spacing ── */
+  --tracking-tight:  -0.3px;
+  --tracking-normal: 0;
+  --tracking-wide:   0.04em;
+
+
+  /* ── SPACING ── */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+
+  /* ── BORDER RADIUS ── */
+  --radius-sm:   8px;    /* small chips, tags */
+  --radius-md:   14px;   /* cards, inputs */
+  --radius-lg:   20px;   /* large cards, panels */
+  --radius-xl:   28px;   /* modals, sheets */
+  --radius-full: 999px;  /* pills, circles */
+
+  /* ── LAYOUT ── */
+  --max-width:       1200px;   /* max page content width */
+  --max-width-text:  640px;    /* max readable text column */
+  --nav-height:      64px;     /* desktop nav */
+  --nav-height-mob:  56px;     /* mobile nav */
+  --phone-width:     320px;    /* prototype phone frame */
+  --phone-height:    692px;    /* prototype phone frame */
+  --phone-radius:    44px;     /* phone corner radius */
+
+  /* ── TRANSITIONS ── */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:    cubic-bezier(0.4, 0, 1, 1);
+  --ease-snap:  cubic-bezier(0.34, 1.56, 0.64, 1);   /* slight overshoot */
+  --dur-fast:   120ms;
+  --dur-base:   220ms;
+  --dur-slow:   380ms;
+
+}
+
+
+/* ══════════════════════════════════════════════
+   UTILITY CLASSES
+   Import tokens.css and use these anywhere.
+══════════════════════════════════════════════ */
+
+/* Reset */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* Base */
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--ink);
+  background: var(--paper);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography helpers */
+.font-display  { font-family: var(--font-display); }
+.font-body     { font-family: var(--font-body); }
+.italic        { font-style: italic; }
+.bold          { font-weight: var(--weight-bold); }
+
+.text-ink      { color: var(--ink); }
+.text-ink-2    { color: var(--ink-2); }
+.text-ink-3    { color: var(--ink-3); }
+.text-ink-4    { color: var(--ink-4); }
+.text-accent   { color: var(--accent); }
+.text-brown    { color: var(--brown); }
+
+/* Glass surfaces */
+.glass {
+  background: var(--g-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shine), var(--g-shadow);
+}
+.glass-mid {
+  background: var(--g-bg-mid);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shine), var(--g-shadow);
+}
+.glass-full {
+  background: var(--g-bg-full);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--g-border);
+  box-shadow: var(--g-shine), var(--g-shadow);
+}
+
+/* Buttons */
+.btn-primary {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: rgba(253,252,248,0.96);
+  background: var(--brown);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 12px 24px;
+  cursor: pointer;
+  letter-spacing: var(--tracking-wide);
+  transition: opacity var(--dur-fast) var(--ease-out);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.btn-primary:hover { opacity: 0.82; }
+
+.btn-ghost {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-regular);
+  color: var(--ink-2);
+  background: transparent;
+  border: 1px solid var(--paper-4);
+  border-radius: var(--radius-full);
+  padding: 11px 22px;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out);
+}
+.btn-ghost:hover { background: var(--paper-2); border-color: var(--paper-3); }
+
+/* Card */
+.card {
+  background: var(--paper-2);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
