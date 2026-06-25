@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReadReadRead — Your reading life, alive.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --paper:   #FDFCF8;
+      --ink:     #1A1814;
+      --ink-2:   #3A3730;
+      --ink-3:   #6E6A62;
+      --ink-4:   #B0ABA2;
+      --accent:  #7A6248;
+
+      /* liquid glass tokens */
+      --g-bg:      rgba(255, 255, 255, 0.42);
+      --g-bg-mid:  rgba(255, 255, 255, 0.58);
+      --g-bg-full: rgba(255, 255, 255, 0.76);
+      --g-border:  rgba(255, 255, 255, 0.52);
+      --g-shine:   inset 0 1px 0 rgba(255,255,255,0.90);
+      --g-shadow:  0 2px 16px rgba(60,50,30,0.06), 0 1px 3px rgba(60,50,30,0.04);
+      --g-shadow-raised: 0 4px 32px rgba(60,50,30,0.08), 0 1px 4px rgba(60,50,30,0.05);
+      --blur: blur(22px) saturate(1.6);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Serif JP', Georgia, serif;
+      background: var(--paper);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .logo, .chapter-title, .price-n {
+      font-family: 'Libre Baskerville', Georgia, serif;
+    }
+
+    /* Brand mark: Read · Read italic · Read bold */
+    .brand r-1 { font-style: normal;  font-weight: 400; }
+    .brand r-2 { font-style: italic;  font-weight: 400; }
+    .brand r-3 { font-style: normal;  font-weight: 700; }
+
+    /* ── AMBIENT BG ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 110% 55% at 70% -10%, rgba(225,215,195,0.32) 0%, transparent 60%),
+        radial-gradient(ellipse 70%  45% at 5%  90%,  rgba(210,205,190,0.20) 0%, transparent 55%),
+        var(--paper);
+    }
+    .bg::after {
+      content: ''; position: absolute; inset: 0; opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.78' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── GLASS MIXIN ── */
+    .glass {
+      background: var(--g-bg);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--g-border);
+      box-shadow: var(--g-shine), var(--g-shadow);
+    }
+    .glass-mid {
+      background: var(--g-bg-mid);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid var(--g-border);
+      box-shadow: var(--g-shine), var(--g-shadow);
+    }
+    .glass-full {
+      background: var(--g-bg-full);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid rgba(255,255,255,0.72);
+      box-shadow: var(--g-shine), var(--g-shadow-raised);
+    }
+
+    .page { position: relative; z-index: 1; }
+    .wrap      { max-width: 700px;  margin: 0 auto; padding: 0 48px; }
+    .wrap-wide { max-width: 980px;  margin: 0 auto; padding: 0 48px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; inset: 0 0 auto 0; z-index: 100;
+      height: 54px; display: flex; align-items: center;
+    }
+    .nav-bg {
+      position: absolute; inset: 0;
+      background: rgba(253,252,248,0.72);
+      backdrop-filter: blur(20px) saturate(1.5);
+      -webkit-backdrop-filter: blur(20px) saturate(1.5);
+      border-bottom: 1px solid rgba(255,255,255,0.55);
+      box-shadow: 0 1px 0 rgba(60,50,30,0.05);
+    }
+    .nav-inner {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 980px; margin: 0 auto; padding: 0 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-size: 14px; font-weight: 700; font-style: italic;
+      color: var(--ink); letter-spacing: 0.01em;
+    }
+    .nav-center {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 10px; letter-spacing: 0.22em;
+      color: var(--ink-4); text-transform: uppercase;
+    }
+    .nav-r { display: flex; align-items: center; gap: 4px; }
+    .nav-pill {
+      font-size: 12px; color: var(--ink-3); padding: 4px 10px;
+      text-decoration: none; letter-spacing: 0.03em;
+      transition: color 0.12s;
+    }
+    .nav-pill:hover { color: var(--ink); }
+    .btn-nav {
+      font-family: 'Noto Serif JP', serif; font-size: 12px; font-weight: 500;
+      color: var(--ink); text-decoration: none; letter-spacing: 0.04em;
+      padding: 5px 16px; border-radius: 20px;
+      background: var(--g-bg-mid);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--g-border);
+      box-shadow: var(--g-shine), 0 1px 4px rgba(60,50,30,0.06);
+      transition: box-shadow 0.15s;
+    }
+    .btn-nav:hover { box-shadow: var(--g-shine), 0 3px 12px rgba(60,50,30,0.10); }
+
+    /* ── TITLE PAGE ── */
+    .title-page {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 120px 48px 80px;
+    }
+    .edition {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 10.5px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--ink-4); margin-bottom: 44px;
+    }
+    h1 {
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 700; letter-spacing: -1px; line-height: 1.0; color: var(--ink);
+      margin-bottom: 6px;
+    }
+    h1 em { font-style: italic; font-weight: 400; color: var(--ink-3); }
+    .hero-sub {
+      font-size: 17px; line-height: 1.85; color: var(--ink-3);
+      max-width: 420px; margin: 36px auto 48px;
+    }
+
+    /* ornament */
+    .orn {
+      color: var(--ink-4); letter-spacing: 0.3em;
+      font-size: 16px; margin: 28px 0;
+    }
+
+    /* ── FORM ── */
+    .form-shell { width: 100%; max-width: 400px; }
+    .form-row {
+      display: flex; overflow: hidden;
+      border-radius: 24px;
+      background: rgba(245,241,234,0.72);
+      backdrop-filter: var(--blur);
+      -webkit-backdrop-filter: var(--blur);
+      border: 1px solid rgba(210,200,185,0.55);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.60), 0 1px 4px rgba(60,50,30,0.06);
+      padding: 4px 4px 4px 20px;
+      gap: 6px;
+    }
+    .form-row input {
+      flex: 1; min-width: 0; border: none; background: transparent;
+      font-family: 'Noto Serif JP', serif; font-size: 14px;
+      color: var(--ink); outline: none;
+    }
+    .form-row input::placeholder { color: var(--ink-4); }
+    .btn-primary {
+      font-family: 'Noto Serif JP', serif; font-size: 13px; font-weight: 500;
+      color: rgba(253,252,248,0.96); background: #3B2010;
+      border: none; cursor: pointer; padding: 10px 20px; border-radius: 20px;
+      letter-spacing: 0.03em; white-space: nowrap;
+      transition: opacity 0.15s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .btn-primary:hover { opacity: 0.82; }
+    .form-caption { margin-top: 12px; font-size: 11.5px; color: var(--ink-4); letter-spacing: 0.06em; }
+    .success { display: none; font-size: 14px; font-style: italic; color: var(--ink-2); padding: 12px 0; }
+
+    /* ── STATS ── */
+    .colophon {
+      display: flex; gap: 0; margin-top: 60px;
+      border-radius: 20px; overflow: hidden;
+      max-width: 460px; width: 100%;
+      background: rgba(242,238,230,0.65) !important;
+      border-color: rgba(210,200,185,0.50) !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), 0 1px 3px rgba(60,50,30,0.05) !important;
+    }
+    .col-item {
+      flex: 1; padding: 22px 20px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.5);
+    }
+    .col-item:last-child { border: none; }
+    .col-n {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 26px; font-weight: 700; color: var(--ink); line-height: 1;
+    }
+    .col-l {
+      font-size: 10.5px; color: var(--ink-4);
+      margin-top: 6px; letter-spacing: 0.13em; text-transform: uppercase;
+    }
+
+    /* ── CHAPTER HEADER ── */
+    section { padding: 0 0 80px; }
+    .chapter-break { padding: 72px 0 52px; text-align: center; }
+    .chapter-num {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; margin-bottom: 28px; color: var(--ink-4);
+    }
+    .chapter-num::before,
+    .chapter-num::after {
+      content: ''; flex: 1; max-width: 52px;
+      height: 1px; background: var(--ink-4); opacity: 0.45;
+    }
+    .chapter-num span {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 13px; font-style: italic; font-weight: 400;
+      letter-spacing: 0.04em; color: var(--ink-4);
+    }
+    .chapter-title {
+      font-size: clamp(24px, 3.5vw, 38px); font-weight: 700;
+      letter-spacing: -0.3px; color: var(--ink); line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .chapter-desc {
+      font-size: 15px; color: var(--ink-3); line-height: 1.82;
+      max-width: 420px; margin: 0 auto;
+    }
+    .dinkus { display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 20px; }
+    .dinkus-l { width: 32px; height: 1px; background: rgba(0,0,0,0.08); }
+    .dinkus-m { font-size: 11px; color: var(--ink-4); }
+
+    /* ── FEATURE FRAMES — glass cards replacing ruled list ── */
+    .feat-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    @media(max-width:600px){ .feat-grid { grid-template-columns: 1fr; } }
+
+    .feat-frame {
+      padding: 28px 26px; border-radius: 18px;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .feat-frame:hover {
+      box-shadow: var(--g-shine), var(--g-shadow-raised);
+      transform: translateY(-2px);
+    }
+    .feat-tag {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-4); display: block; margin-bottom: 10px;
+    }
+    .feat-frame h3 {
+      font-size: 16px; font-weight: 700; color: var(--ink);
+      letter-spacing: -0.2px; margin-bottom: 9px; line-height: 1.3;
+    }
+    .feat-frame p { font-size: 13.5px; color: var(--ink-3); line-height: 1.8; }
+
+    /* ── AI FRAMES ── */
+    .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 0; }
+    @media(max-width:640px){ .ai-grid { grid-template-columns: 1fr; } }
+
+    .ai-frame {
+      padding: 36px 32px; border-radius: 24px;
+    }
+    .ai-mode {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--accent); display: block; margin-bottom: 14px;
+    }
+    .ai-frame h3 {
+      font-size: 20px; font-weight: 700; color: var(--ink);
+      letter-spacing: -0.3px; margin-bottom: 14px; line-height: 1.3;
+    }
+    .ai-frame p { font-size: 14px; color: var(--ink-2); line-height: 1.85; }
+    .ai-quote {
+      margin-top: 22px; padding: 16px 18px;
+      background: rgba(255,255,255,0.45);
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.6);
+      font-size: 13px; color: var(--ink-3); line-height: 1.8; font-style: italic;
+    }
+
+    /* ── HAPTIC FRAMES ── */
+    .haptic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media(max-width:580px){ .haptic-grid { grid-template-columns: 1fr; } }
+
+    .haptic-frame {
+      display: flex; gap: 18px; align-items: flex-start;
+      padding: 24px 22px; border-radius: 18px;
+    }
+    .haptic-svg { width: 26px; height: 26px; flex-shrink: 0; margin-top: 3px; color: var(--ink-3); }
+    .haptic-frame h4 {
+      font-size: 14px; font-weight: 700; color: var(--ink);
+      letter-spacing: -0.1px; margin-bottom: 5px;
+    }
+    .haptic-frame p { font-size: 13px; color: var(--ink-3); line-height: 1.75; }
+
+    /* ── PRICING FRAMES ── */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    @media(max-width:680px){ .pricing-grid { grid-template-columns: 1fr; max-width: 360px; margin: 0 auto; } }
+
+    .p-frame {
+      padding: 32px 28px; border-radius: 24px; position: relative;
+    }
+    .p-frame.featured {
+      background: var(--g-bg-full) !important;
+      border-color: rgba(255,255,255,0.80) !important;
+      box-shadow: var(--g-shine), var(--g-shadow-raised) !important;
+    }
+    .p-pill {
+      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: var(--paper);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 9.5px; font-weight: 500; letter-spacing: 0.12em;
+      padding: 3px 14px; border-radius: 20px; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .p-tier {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 9.5px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-4); margin-bottom: 8px;
+    }
+    .price-n {
+      font-size: 34px; font-weight: 700; letter-spacing: -1px;
+      color: var(--ink); line-height: 1; margin-bottom: 4px;
+    }
+    .price-n small {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 13px; font-weight: 400; color: var(--ink-4); letter-spacing: 0;
+    }
+    .p-tagline { font-size: 13px; color: var(--ink-3); margin-bottom: 22px; line-height: 1.6; }
+    .p-list { list-style: none; }
+    .p-list li {
+      font-size: 13px; color: var(--ink-2); padding: 6px 0;
+      display: flex; align-items: flex-start; gap: 9px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .p-list li:last-child { border: none; }
+    .p-list li::before {
+      content: '·'; color: var(--accent);
+      font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: -1px;
+    }
+
+    /* ── CTA ── */
+    .cta-wrap { padding: 80px 24px 96px; display: flex; justify-content: center; }
+    .cta-frame {
+      max-width: 580px; width: 100%;
+      padding: 60px 52px; text-align: center; border-radius: 32px;
+    }
+    .cta-frame h2 {
+      font-size: clamp(26px, 4vw, 40px); font-weight: 700;
+      letter-spacing: -0.3px; color: var(--ink); margin-bottom: 14px; line-height: 1.25;
+    }
+    .cta-frame p {
+      font-size: 16px; color: var(--ink-3); line-height: 1.8;
+      margin-bottom: 36px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center; padding: 32px;
+      font-size: 11.5px; color: var(--ink-4); letter-spacing: 0.08em;
+    }
+
+    @media(max-width:540px){
+      .wrap, .wrap-wide { padding: 0 24px; }
+      nav .nav-inner { padding: 0 24px; }
+      .nav-r .nav-pill { display: none; }
+      .cta-frame { padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="page">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-bg"></div>
+    <div class="nav-inner">
+      <div class="logo brand"><r-1>Read</r-1><r-2>Read</r-2><r-3>Read</r-3></div>
+
+      <div class="nav-r">
+        <a href="#features" class="nav-pill">Features</a>
+        <a href="#ai"       class="nav-pill">AI</a>
+        <a href="#pricing"  class="nav-pill">Pricing</a>
+        <a href="#waitlist" class="btn-nav">Join waitlist</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- TITLE PAGE -->
+  <div class="title-page">
+    <div class="edition">A Reading Companion · First Edition</div>
+
+    <h1 class="brand"><r-1>Read</r-1><r-2>Read</r-2><r-3>Read</r-3></h1>
+
+    <p class="hero-sub">
+      Track every page, every word, every chapter. With an AI companion that knows exactly where you are in the story.
+    </p>
+
+    <div class="form-shell" id="waitlist">
+      <form class="form-row" onsubmit="handleSubmit(event, this)">
+        <input type="email" placeholder="your@email.com" required />
+        <button class="btn-primary" type="submit">Join the waitlist</button>
+      </form>
+      <div class="success" id="s-hero">You're on the list. We'll reach out when early access opens.</div>
+      <p class="form-caption">No correspondence until early access opens.</p>
+    </div>
+
+    <div class="colophon glass">
+      <div class="col-item">
+        <div class="col-n">100+</div>
+        <div class="col-l">Waitlist goal</div>
+      </div>
+      <div class="col-item">
+        <div class="col-n">4</div>
+        <div class="col-l">Reader types</div>
+      </div>
+      <div class="col-item">
+        <div class="col-n">II</div>
+        <div class="col-l">AI modes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHAPTER I -->
+  <section id="features">
+    <div class="wrap">
+      <div class="chapter-break">
+        <div class="chapter-num"><span>I</span></div>
+        <h2 class="chapter-title">What the app does.</h2>
+        <p class="chapter-desc">Physical or digital, casual or obsessed. Read³ tracks what matters and makes progress feel real.</p>
+        <div class="dinkus"><div class="dinkus-l"></div><span class="dinkus-m">✦</span><div class="dinkus-l"></div></div>
+      </div>
+
+      <div class="feat-grid">
+        <div class="feat-frame glass">
+          <span class="feat-tag">I.i</span>
+          <h3>Page & Word Tracker</h3>
+          <p>Log pages manually or sync your e-reader. Watch your lifetime word count climb across every book, physical and digital unified.</p>
+        </div>
+        <div class="feat-frame glass">
+          <span class="feat-tag">I.ii</span>
+          <h3>Story Progression Map</h3>
+          <p>A chapter-by-chapter visual of your journey. Mark plot moments and emotional peaks as you go. Your personal story map.</p>
+        </div>
+        <div class="feat-frame glass">
+          <span class="feat-tag">I.iii</span>
+          <h3>Streaks & Goals</h3>
+          <p>Daily reading streaks, annual goals, and a visual calendar that makes consistency feel satisfying rather than obligatory.</p>
+        </div>
+        <div class="feat-frame glass">
+          <span class="feat-tag">I.iv</span>
+          <h3>Progress Share Cards</h3>
+          <p>Auto-generated, spoiler-safe cards at 25%, 50%, 75%, and 100% completion. Beautiful enough to share anywhere in one tap.</p>
+        </div>
+        <div class="feat-frame glass">
+          <span class="feat-tag">I.v</span>
+          <h3>Personalized Read-Screen</h3>
+          <p>Custom fonts, ambient sounds, and focus mode. Save distinct profiles for night sessions, commutes, or deep work.</p>
+        </div>
+        <div class="feat-frame glass">
+          <span class="feat-tag">I.vi</span>
+          <h3>Physical + Digital Bundle</h3>
+          <p>Scan your physical book's barcode and pair it with the e-book edition. Switch modes without losing your place.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER II -->
+  <section id="ai">
+    <div class="wrap">
+      <div class="chapter-break">
+        <div class="chapter-num"><span>II</span></div>
+        <h2 class="chapter-title">An AI that reads alongside you.</h2>
+        <p class="chapter-desc">Context-aware, completely spoiler-free. It only knows what you've already read.</p>
+        <div class="dinkus"><div class="dinkus-l"></div><span class="dinkus-m">✦</span><div class="dinkus-l"></div></div>
+      </div>
+    </div>
+    <div class="wrap-wide">
+      <div class="ai-grid">
+        <div class="ai-frame glass">
+          <span class="ai-mode">Expert Mode</span>
+          <h3>The Scholar</h3>
+          <p>Everything the internet knows about your current passage, synthesized and filtered to your exact page. Symbolism, context, author interviews, scholarly analysis. Never a spoiler beyond where you are.</p>
+          <div class="ai-quote">
+            You're on page 120 of 1984. Here's what readers and scholars have said about this scene, and why it resonated differently for those who knew what Orwell was living through when he wrote it...
+          </div>
+        </div>
+        <div class="ai-frame glass">
+          <span class="ai-mode">Friend Mode</span>
+          <h3>The Buddy</h3>
+          <p>Your reading friend who has opinions, asks yours, and remembers how you felt three chapters ago. The conversation becomes a Book Diary: your emotional journey, downloadable when you finish.</p>
+          <div class="ai-quote">
+            Wait, do you actually trust that character? I've been suspicious since chapter 2 and genuinely need to know if it's just me. What's your read on them?
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER III -->
+  <section>
+    <div class="wrap">
+      <div class="chapter-break">
+        <div class="chapter-num"><span>III</span></div>
+        <h2 class="chapter-title">Reading you can feel.</h2>
+        <p class="chapter-desc">Subtle haptic patterns that make digital reading feel grounded, like holding a real book.</p>
+        <div class="dinkus"><div class="dinkus-l"></div><span class="dinkus-m">✦</span><div class="dinkus-l"></div></div>
+      </div>
+
+      <div class="haptic-grid">
+        <div class="haptic-frame glass">
+          <svg class="haptic-svg" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 4h10l4 4v16a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M17 4v5h4"/><line x1="10" y1="13" x2="18" y2="13"/><line x1="10" y1="17" x2="15" y2="17"/>
+          </svg>
+          <div>
+            <h4>Page Turn, Paper Rustle</h4>
+            <p>A multi-pulse pattern mimics the soft resistance and release of turning a real page.</p>
+          </div>
+        </div>
+        <div class="haptic-frame glass">
+          <svg class="haptic-svg" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="14" cy="14" r="10"/><path d="M9 14.5l3.5 3.5 7-7"/>
+          </svg>
+          <div>
+            <h4>Chapter Complete, Bounce</h4>
+            <p>A gentle double-tap when you finish a chapter. Like a satisfying thud marking a threshold crossed.</p>
+          </div>
+        </div>
+        <div class="haptic-frame glass">
+          <svg class="haptic-svg" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <path d="M2 14 C5 9, 8 9, 11 14 S17 19, 20 14 S23 9, 26 14"/>
+          </svg>
+          <div>
+            <h4>Milestone Pulse</h4>
+            <p>A slow wave at 25%, 50%, 75%, 100%. Like pages fanning gently through your fingers.</p>
+          </div>
+        </div>
+        <div class="haptic-frame glass">
+          <svg class="haptic-svg" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+            <line x1="14" y1="3"  x2="14" y2="7" /><line x1="14" y1="21" x2="14" y2="25"/>
+            <line x1="3"  y1="14" x2="7"  y2="14"/><line x1="21" y1="14" x2="25" y2="14"/>
+            <line x1="5.5" y1="5.5" x2="8.5" y2="8.5"/><line x1="19.5" y1="19.5" x2="22.5" y2="22.5"/>
+            <line x1="22.5" y1="5.5" x2="19.5" y2="8.5"/><line x1="8.5" y1="19.5" x2="5.5" y2="22.5"/>
+            <circle cx="14" cy="14" r="3.5"/>
+          </svg>
+          <div>
+            <h4>Streak Celebration</h4>
+            <p>Three quick taps when you extend your streak. A tiny, joyful signal in your palm.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTER IV -->
+  <section id="pricing">
+    <div class="wrap">
+      <div class="chapter-break">
+        <div class="chapter-num"><span>IV</span></div>
+        <h2 class="chapter-title">Free to start.<br>Powerful when ready.</h2>
+        <p class="chapter-desc">No credit card to join the waitlist. Lock in early access pricing at launch.</p>
+        <div class="dinkus"><div class="dinkus-l"></div><span class="dinkus-m">✦</span><div class="dinkus-l"></div></div>
+      </div>
+    </div>
+    <div class="wrap-wide">
+      <div class="pricing-grid">
+        <div class="p-frame glass">
+          <div class="p-tier">Free</div>
+          <div class="price-n">$0 <small>/ forever</small></div>
+          <div class="p-tagline">Everything to build your reading habit.</div>
+          <ul class="p-list">
+            <li>Page & word tracking</li>
+            <li>Streaks & reading goals</li>
+            <li>Basic progress sharing</li>
+            <li>1 AI companion chat / day</li>
+            <li>3 starter collectibles</li>
+          </ul>
+        </div>
+        <div class="p-frame glass featured">
+          <div class="p-tier">Reader Pass</div>
+          <div class="p-pill">Most popular</div>
+          <div class="price-n">$4.99 <small>/ month</small></div>
+          <div class="p-tagline">For readers who want the full experience.</div>
+          <ul class="p-list">
+            <li>Unlimited AI companion</li>
+            <li>Expert & Friend AI modes</li>
+            <li>Full read-screen customization</li>
+            <li>Advanced reading stats</li>
+            <li>Beautiful share cards</li>
+            <li>Full collectibles unlock tree</li>
+          </ul>
+        </div>
+        <div class="p-frame glass">
+          <div class="p-tier">Book Bundle</div>
+          <div class="price-n">$9.99 <small>/ month</small></div>
+          <div class="p-tagline">Physical + digital, unified.</div>
+          <ul class="p-list">
+            <li>Everything in Reader Pass</li>
+            <li>Physical book barcode scan</li>
+            <li>Bundled e-book discounts</li>
+            <li>E-book collaboration</li>
+            <li>Book club sync & highlights</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <div class="cta-frame glass-full">
+      <div class="orn">· · ·</div>
+      <h2>Ready to make reading<br>feel like reading again?</h2>
+      <p>Join the waitlist. We're building for readers like you.</p>
+      <div style="max-width:360px; margin:0 auto;">
+        <form class="form-row" onsubmit="handleSubmit(event, this)" style="background:rgba(253,252,248,0.85);">
+          <input type="email" placeholder="your@email.com" required />
+          <button class="btn-primary" type="submit">Get early access</button>
+        </form>
+      </div>
+      <p class="form-caption" style="margin-top:12px;">No correspondence until early access opens.</p>
+    </div>
+  </div>
+
+  <footer>© 2026 <span class="brand" style="font-family:'Libre Baskerville',serif;"><r-1>Read</r-1><r-2>Read</r-2><r-3>Read</r-3></span> · Made for readers, by readers.</footer>
+
+</div>
+
+<script>
+  function handleSubmit(e, form) {
+    e.preventDefault();
+    form.style.display = 'none';
+    const hero = document.getElementById('s-hero');
+    if (hero && form.closest('#waitlist')) {
+      hero.style.display = 'block';
+    } else {
+      const m = document.createElement('p');
+      m.style.cssText = 'font-size:14px;font-style:italic;color:#3A3730;margin-top:10px;text-align:center;';
+      m.textContent = "You're on the list. We'll reach out when early access opens.";
+      form.parentNode.insertBefore(m, form.nextSibling);
+    }
+    console.log('signup:', form.querySelector('input').value);
+  }
+</script>
+</body>
+</html>

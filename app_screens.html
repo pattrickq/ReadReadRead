@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReadReadRead — App Screens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@300;400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper:   #FDFCF8;
+    --paper-2: #F7F3EC;
+    --paper-3: #EDE8DF;
+    --ink:     #1A1814;
+    --ink-2:   #3A3730;
+    --ink-3:   #6E6A62;
+    --ink-4:   #B0ABA2;
+    --accent:  #7A6248;
+    --accent-2:#5C4A35;
+    --brown:   #3B2010;
+    --green:   #4A7C59;
+    --blue:    #4A6C8C;
+  }
+
+  body {
+    background: #EDEAE4;
+    font-family: 'Noto Serif JP', serif;
+    padding: 60px 40px;
+    min-height: 100vh;
+  }
+
+  /* page header */
+  .page-header {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+  .page-header .brand {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 22px;
+    letter-spacing: -0.3px;
+    color: var(--ink-2);
+    margin-bottom: 8px;
+  }
+  .page-header .brand r-1 { font-style: normal; font-weight: 400; }
+  .page-header .brand r-2 { font-style: italic; font-weight: 400; }
+  .page-header .brand r-3 { font-style: normal; font-weight: 700; }
+  .page-header p {
+    font-size: 12px; color: var(--ink-4); letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* screen grid */
+  .screens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+    justify-content: center;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  .screen-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  .screen-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-4); font-family: 'Noto Serif JP', serif;
+  }
+
+  /* phone frame */
+  .phone {
+    width: 320px;
+    height: 692px;
+    background: var(--paper);
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.10),
+      0 0 0 8px #D4CFC8,
+      0 0 0 9px rgba(0,0,0,0.08),
+      0 24px 64px rgba(0,0,0,0.22),
+      0 8px 20px rgba(0,0,0,0.12);
+  }
+
+  /* status bar */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px 0;
+    font-size: 11px; font-weight: 500; color: var(--ink-2);
+    font-family: 'Noto Serif JP', serif;
+  }
+  .status-bar .time { font-size: 13px; font-weight: 600; letter-spacing: -0.2px; }
+  .status-icons { display: flex; gap: 5px; align-items: center; }
+  .status-icons svg { width: 14px; height: 14px; }
+
+  /* nav bar */
+  .nav-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 76px;
+    background: rgba(253,252,248,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex; justify-content: space-around; align-items: flex-start;
+    padding-top: 10px;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 10px; font-weight: 400; color: var(--ink-4);
+    cursor: pointer; padding: 0 8px;
+  }
+  .nav-item.active { color: var(--brown); }
+  .nav-item svg { width: 20px; height: 20px; }
+
+  /* scroll area */
+  .screen-content {
+    height: calc(100% - 76px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    padding-bottom: 24px;
+  }
+  .screen-content::-webkit-scrollbar { display: none; }
+
+  /* ─────────────────────────────
+     SCREEN 1: HOME
+  ───────────────────────────── */
+  .home-header {
+    padding: 10px 22px 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .home-greeting {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 20px; font-weight: 700; color: var(--ink);
+    line-height: 1.2;
+  }
+  .home-greeting span { font-weight: 400; font-style: italic; color: var(--ink-3); font-size: 13px; display: block; margin-bottom: 2px; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--paper-3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: var(--accent);
+  }
+
+  .streak-pill {
+    margin: 14px 22px 0;
+    background: rgba(59,32,16,0.06);
+    border: 1px solid rgba(59,32,16,0.10);
+    border-radius: 20px;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .streak-fire { font-size: 18px; }
+  .streak-info { flex: 1; }
+  .streak-n { font-family: 'Libre Baskerville', serif; font-size: 16px; font-weight: 700; color: var(--brown); }
+  .streak-l { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 1px; }
+  .streak-dots { display: flex; gap: 4px; }
+  .streak-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--paper-3); }
+  .streak-dot.done { background: var(--brown); }
+
+  .section-title {
+    padding: 18px 22px 10px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px; font-weight: 400; letter-spacing: 0; color: var(--ink-4);
+  }
+
+  .book-card {
+    margin: 0 22px;
+    background: var(--paper-2);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex; gap: 14px;
+  }
+  .book-cover {
+    width: 54px; height: 76px; border-radius: 6px;
+    background: linear-gradient(145deg, #8B6B4A, #5C4030);
+    flex-shrink: 0;
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; padding: 6px;
+  }
+  .book-cover::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 50%);
+  }
+  .book-cover-spine {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+    background: rgba(0,0,0,0.20);
+  }
+  .book-info { flex: 1; min-width: 0; }
+  .book-title { font-family: 'Libre Baskerville', serif; font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .book-author { font-size: 11px; color: var(--ink-4); margin-top: 3px; }
+  .book-progress-bar {
+    margin-top: 12px;
+    height: 3px; background: var(--paper-3); border-radius: 2px;
+    overflow: hidden;
+  }
+  .book-progress-fill { height: 100%; background: var(--brown); border-radius: 2px; }
+  .book-progress-label {
+    display: flex; justify-content: space-between;
+    margin-top: 6px; font-size: 10px; color: var(--ink-4);
+  }
+  .book-progress-pct { color: var(--brown); font-weight: 600; }
+
+  .continue-btn {
+    margin: 12px 22px 0;
+    background: var(--brown);
+    color: rgba(253,252,248,0.96);
+    border: none; border-radius: 14px;
+    padding: 13px;
+    width: calc(100% - 44px);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 0.04em; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+
+  .stats-row {
+    margin: 14px 22px 0;
+    display: flex; gap: 10px;
+  }
+  .stat-card {
+    flex: 1;
+    background: var(--paper-2);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 14px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .stat-n { font-family: 'Libre Baskerville', serif; font-size: 20px; font-weight: 700; color: var(--ink); }
+  .stat-l { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 3px; }
+
+  .shelf-row {
+    margin: 0 22px;
+    display: flex; gap: 10px; overflow-x: auto;
+    scrollbar-width: none; padding-bottom: 4px;
+  }
+  .shelf-row::-webkit-scrollbar { display: none; }
+  .shelf-book {
+    width: 52px; height: 74px; border-radius: 6px; flex-shrink: 0;
+  }
+
+  /* ─────────────────────────────
+     SCREEN 2: READING
+  ───────────────────────────── */
+  .read-bg {
+    position: absolute; inset: 0;
+    background: #F5F0E8;
+  }
+  .read-top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 22px 0;
+    position: relative; z-index: 2;
+  }
+  .read-meta {
+    text-align: center; flex: 1;
+  }
+  .read-meta-title { font-size: 11px; font-weight: 600; color: var(--ink-2); letter-spacing: 0.02em; }
+  .read-meta-ch { font-size: 10px; color: var(--ink-4); margin-top: 1px; }
+  .read-icon-btn {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(0,0,0,0.05);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-3);
+  }
+  .read-icon-btn svg { width: 15px; height: 15px; }
+
+  .read-progress-strip {
+    margin: 12px 22px 0;
+    height: 2px; background: rgba(0,0,0,0.08); border-radius: 1px;
+    position: relative; z-index: 2;
+  }
+  .read-progress-fill { height: 100%; background: var(--accent); border-radius: 1px; width: 62%; }
+  .read-progress-labels {
+    display: flex; justify-content: space-between;
+    margin-top: 5px; padding: 0 0px;
+    font-size: 9px; color: var(--ink-4); letter-spacing: 0.06em;
+    position: relative; z-index: 2;
+  }
+
+  .read-body {
+    padding: 24px 26px 0;
+    position: relative; z-index: 2;
+  }
+  .read-chapter-label {
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px; font-style: italic;
+    font-family: 'Libre Baskerville', serif;
+  }
+  .read-text {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15.5px; line-height: 1.90; color: var(--ink-2);
+    letter-spacing: 0.01em;
+  }
+  .read-text p { margin-bottom: 16px; }
+  .read-text .highlight {
+    background: rgba(122,98,72,0.12);
+    border-radius: 2px; padding: 0 1px;
+  }
+
+  .read-bottom-bar {
+    position: absolute; bottom: 76px; left: 0; right: 0;
+    padding: 10px 22px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(0deg, rgba(245,240,232,1) 60%, transparent);
+    z-index: 3;
+  }
+  .read-page-n {
+    font-size: 11px; color: var(--ink-4); letter-spacing: 0.08em;
+  }
+  .haptic-badge {
+    background: rgba(59,32,16,0.08);
+    border-radius: 10px; padding: 4px 10px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px; font-weight: 400; color: var(--accent-2);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .haptic-badge svg { width: 11px; height: 11px; }
+
+  /* ─────────────────────────────
+     SCREEN 3: AI COMPANION
+  ───────────────────────────── */
+  .ai-top {
+    padding: 10px 22px 0;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .ai-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, #7A6248, #5C4030);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ai-avatar svg { width: 20px; height: 20px; color: rgba(253,252,248,0.9); }
+  .ai-info { flex: 1; }
+  .ai-name { font-family: 'Libre Baskerville', serif; font-size: 15px; font-weight: 700; color: var(--ink); }
+  .ai-mode-tag {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px; font-weight: 400;
+    color: var(--accent); margin-top: 1px;
+  }
+  .ai-spoiler-shield {
+    background: rgba(74,124,89,0.10);
+    border: 1px solid rgba(74,124,89,0.20);
+    border-radius: 10px; padding: 3px 9px;
+    font-size: 9px; color: var(--green); letter-spacing: 0.06em;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .ai-spoiler-shield svg { width: 9px; height: 9px; }
+
+  .ai-context-bar {
+    margin: 12px 22px 0;
+    background: rgba(122,98,72,0.07);
+    border: 1px solid rgba(122,98,72,0.12);
+    border-radius: 12px;
+    padding: 9px 14px;
+    font-size: 10.5px; color: var(--ink-3); line-height: 1.5;
+    font-style: italic;
+  }
+  .ai-context-bar strong { color: var(--accent-2); font-style: normal; }
+
+  .chat-area {
+    padding: 16px 22px 0;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+
+  .msg {
+    max-width: 88%;
+    font-size: 13px; line-height: 1.65; color: var(--ink-2);
+  }
+  .msg-ai {
+    align-self: flex-start;
+    background: var(--paper-2);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 4px 16px 16px 16px;
+    padding: 12px 14px;
+  }
+  .msg-user {
+    align-self: flex-end;
+    background: var(--brown);
+    color: rgba(253,252,248,0.92);
+    border-radius: 16px 16px 4px 16px;
+    padding: 11px 14px;
+    font-size: 13px; line-height: 1.6;
+  }
+  .msg-ai-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px; font-weight: 400;
+    color: var(--accent); margin-bottom: 6px;
+  }
+
+  .chat-input-bar {
+    position: absolute; bottom: 76px; left: 0; right: 0;
+    padding: 10px 16px;
+    background: rgba(253,252,248,0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex; gap: 8px; align-items: center;
+  }
+  .chat-input {
+    flex: 1; background: var(--paper-2);
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 20px; padding: 9px 14px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 12.5px; color: var(--ink-3);
+  }
+  .chat-send {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--brown);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .chat-send svg { width: 15px; height: 15px; color: rgba(253,252,248,0.9); }
+
+  /* ─────────────────────────────
+     SCREEN 4: STATS / PROGRESS
+  ───────────────────────────── */
+  .stats-header {
+    padding: 10px 22px 0;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 20px; font-weight: 700; color: var(--ink);
+  }
+  .stats-header span { font-style: italic; font-weight: 400; color: var(--ink-3); }
+
+  .ring-section {
+    margin: 16px 22px 0;
+    background: var(--paper-2);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 18px;
+    padding: 18px;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .ring-wrap { position: relative; width: 78px; height: 78px; flex-shrink: 0; }
+  .ring-wrap svg { width: 78px; height: 78px; transform: rotate(-90deg); }
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .ring-pct { font-family: 'Libre Baskerville', serif; font-size: 17px; font-weight: 700; color: var(--ink); }
+  .ring-sub { font-family: 'Noto Serif JP', serif; font-size: 10px; font-weight: 400; color: var(--ink-4); margin-top: 1px; }
+  .ring-info { flex: 1; }
+  .ring-book { font-family: 'Libre Baskerville', serif; font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .ring-detail { font-size: 11px; color: var(--ink-4); margin-top: 4px; line-height: 1.5; }
+
+  .calendar-section {
+    margin: 12px 22px 0;
+  }
+  .cal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px; font-weight: 400; color: var(--ink-4);
+  }
+  .cal-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+  }
+  .cal-day {
+    aspect-ratio: 1; border-radius: 6px;
+    background: var(--paper-3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8.5px; color: var(--ink-4);
+  }
+  .cal-day.read-light { background: rgba(122,98,72,0.20); color: var(--accent-2); }
+  .cal-day.read-mid   { background: rgba(122,98,72,0.45); color: white; }
+  .cal-day.read-full  { background: var(--brown); color: white; }
+  .cal-day.today      { outline: 1.5px solid var(--brown); }
+
+  .milestone-section {
+    margin: 14px 22px 0;
+  }
+  .milestone-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+  .milestone-item:last-child { border-bottom: none; }
+  .ms-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .ms-dot.done { background: var(--green); }
+  .ms-dot.next { background: var(--paper-3); border: 1.5px solid var(--ink-4); }
+  .ms-text { flex: 1; font-size: 12px; color: var(--ink-2); }
+  .ms-pct { font-size: 11px; color: var(--ink-4); font-family: 'Libre Baskerville', serif; }
+
+  .lifetime-row {
+    margin: 12px 22px 0;
+    display: flex; gap: 10px;
+  }
+  .lt-card {
+    flex: 1; background: var(--paper-2);
+    border: 1px solid rgba(0,0,0,0.05);
+    border-radius: 14px; padding: 12px 10px; text-align: center;
+  }
+  .lt-n { font-family: 'Libre Baskerville', serif; font-size: 18px; font-weight: 700; color: var(--ink); }
+  .lt-l { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 3px; }
+
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="brand"><r-1>Read</r-1><r-2>Read</r-2><r-3>Read</r-3></div>
+  <p>App Screen Mockups — v0.1</p>
+</div>
+
+<div class="screens">
+
+  <!-- ── SCREEN 1: HOME ── -->
+  <div class="screen-wrap">
+    <div class="phone">
+      <!-- status bar -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg>
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <div class="home-header">
+          <div class="home-greeting">
+            <span>Good morning</span>
+            Pat
+          </div>
+          <div class="avatar">P</div>
+        </div>
+
+        <!-- streak -->
+        <div class="streak-pill">
+          <div class="streak-fire">🔥</div>
+          <div class="streak-info">
+            <div class="streak-n">14 days</div>
+            <div class="streak-l">Reading streak</div>
+          </div>
+          <div class="streak-dots">
+            <div class="streak-dot done"></div>
+            <div class="streak-dot done"></div>
+            <div class="streak-dot done"></div>
+            <div class="streak-dot done"></div>
+            <div class="streak-dot done"></div>
+            <div class="streak-dot done"></div>
+            <div class="streak-dot"></div>
+          </div>
+        </div>
+
+        <!-- current book -->
+        <div class="section-title">Now reading</div>
+        <div class="book-card">
+          <div class="book-cover">
+            <div class="book-cover-spine"></div>
+          </div>
+          <div class="book-info">
+            <div class="book-title">Nineteen Eighty-Four</div>
+            <div class="book-author">George Orwell</div>
+            <div class="book-progress-bar">
+              <div class="book-progress-fill" style="width:62%"></div>
+            </div>
+            <div class="book-progress-label">
+              <span>p. 186 / 328</span>
+              <span class="book-progress-pct">62%</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="continue-btn">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>
+          Continue reading
+        </button>
+
+        <!-- stats -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-n">2.4M</div>
+            <div class="stat-l">Words read</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-n">38</div>
+            <div class="stat-l">Books</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-n">22</div>
+            <div class="stat-l">This year</div>
+          </div>
+        </div>
+
+        <!-- shelf -->
+        <div class="section-title">Up next</div>
+        <div class="shelf-row">
+          <div class="shelf-book" style="background:linear-gradient(145deg,#4A6C8C,#2E4A6A)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#6B8C4A,#3A5A2E)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#8C6B4A,#5A3E2E)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#6A4A7A,#3E2A5A)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#7A4A4A,#5A2A2A)"></div>
+        </div>
+      </div>
+
+      <!-- nav bar -->
+      <div class="nav-bar">
+        <div class="nav-item active">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>
+          Home
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+          Read
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>
+          Stats
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="8" r="3"/><path d="M5 20c0-4 2.7-6 6-6s6 2 6 6"/></svg>
+          Profile
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">Home</div>
+  </div>
+
+  <!-- ── SCREEN 2: READING ── -->
+  <div class="screen-wrap">
+    <div class="phone">
+      <div class="read-bg"></div>
+
+      <!-- status bar -->
+      <div class="status-bar" style="position:relative;z-index:2;">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg>
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+      </div>
+
+      <div class="read-top-bar">
+        <div class="read-icon-btn">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 12L6 8l4-4"/></svg>
+        </div>
+        <div class="read-meta">
+          <div class="read-meta-title">Nineteen Eighty-Four</div>
+          <div class="read-meta-ch">Chapter III</div>
+        </div>
+        <div class="read-icon-btn">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="4" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </div>
+      </div>
+
+      <div class="read-progress-strip">
+        <div class="read-progress-fill"></div>
+      </div>
+      <div class="read-progress-labels">
+        <span>p. 186</span>
+        <span>62%</span>
+        <span>p. 328</span>
+      </div>
+
+      <div class="read-body">
+        <div class="read-chapter-label">Part Two, Chapter III</div>
+        <div class="read-text">
+          <p>The blackness was total. He did not know whether he was facing the telescreen or away from it. If he was facing it the guards could see him.</p>
+          <p>He lay as still as he could. He thought of <span class="highlight">O'Brien. He was not certain when he had first become</span> aware of the possibility of betrayal. The Party had told him that it had reformed him, and he believed it.</p>
+          <p>Outside, even through the shut window pane, the world looked cold. Down in the street little eddies of wind were whirling dust and torn paper into spirals...</p>
+        </div>
+      </div>
+
+      <div class="read-bottom-bar">
+        <div class="read-page-n">186 of 328</div>
+        <div class="haptic-badge">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 6 C3 4, 4 4, 5 6 S7 8, 8 6 S10 4, 11 6"/></svg>
+          Haptic on
+        </div>
+      </div>
+
+      <!-- nav bar -->
+      <div class="nav-bar">
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>
+          Home
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+          Read
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>
+          Stats
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="8" r="3"/><path d="M5 20c0-4 2.7-6 6-6s6 2 6 6"/></svg>
+          Profile
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">Reading</div>
+  </div>
+
+  <!-- ── SCREEN 3: AI COMPANION ── -->
+  <div class="screen-wrap">
+    <div class="phone">
+      <!-- status bar -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg>
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+      </div>
+
+      <div class="ai-top">
+        <div class="ai-avatar">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="11" cy="10" r="4"/><path d="M5 6C6 3 16 3 17 6"/><path d="M7 19c0-3 1.5-5 4-5s4 2 4 5"/></svg>
+        </div>
+        <div class="ai-info">
+          <div class="ai-name">The Scholar</div>
+          <div class="ai-mode-tag">Expert Mode</div>
+        </div>
+        <div class="ai-spoiler-shield">
+          <svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 1a4 4 0 0 0-4 4c0 2.2 1.8 4 4 4s4-1.8 4-4-1.8-4-4-4zm0 2v2.5l1.5 1"/></svg>
+          p.186 safe
+        </div>
+      </div>
+
+      <div class="ai-context-bar">
+        Currently: <strong>1984, Part Two Ch. III</strong> · p.186 of 328
+      </div>
+
+      <div class="screen-content" style="height:calc(100% - 240px);margin-top:12px;">
+        <div class="chat-area">
+          <div class="msg msg-ai">
+            <div class="msg-ai-name">The Scholar</div>
+            The passage you just read is often cited as Orwell's most direct commentary on psychological control. The "doublethink" mechanism Winston references here mirrors Koestler's <em>Darkness at Noon</em>, published just four years prior.
+          </div>
+
+          <div class="msg msg-user">
+            Why does Winston keep trusting O'Brien even when something feels off?
+          </div>
+
+          <div class="msg msg-ai">
+            <div class="msg-ai-name">The Scholar</div>
+            Classic traumatic bonding — Orwell knew this from his own experience with institutional authority at Eton. O'Brien represents the seductive certainty Winston craves. The Party doesn't just punish dissent; it offers belonging as the alternative.
+          </div>
+
+          <div class="msg msg-user">
+            That's bleak
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-input-bar">
+        <div class="chat-input">Ask about this passage…</div>
+        <div class="chat-send">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2L2 7l5 2 2 5 5-12z"/></svg>
+        </div>
+      </div>
+
+      <!-- nav bar -->
+      <div class="nav-bar">
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>
+          Home
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+          Read
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>
+          Stats
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="8" r="3"/><path d="M5 20c0-4 2.7-6 6-6s6 2 6 6"/></svg>
+          Profile
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">AI Companion</div>
+  </div>
+
+  <!-- ── SCREEN 4: STATS ── -->
+  <div class="screen-wrap">
+    <div class="phone">
+      <!-- status bar -->
+      <div class="status-bar">
+        <span class="time">9:41</span>
+        <div class="status-icons">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg>
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg>
+        </div>
+      </div>
+
+      <div class="screen-content">
+        <div class="stats-header">
+          Progress<br><span>Nineteen Eighty-Four</span>
+        </div>
+
+        <!-- ring -->
+        <div class="ring-section">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 78 78">
+              <circle cx="39" cy="39" r="31" fill="none" stroke="#EDE8DF" stroke-width="7"/>
+              <circle cx="39" cy="39" r="31" fill="none" stroke="#3B2010" stroke-width="7"
+                stroke-dasharray="194.8" stroke-dashoffset="74" stroke-linecap="round"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-pct">62%</div>
+              <div class="ring-sub">done</div>
+            </div>
+          </div>
+          <div class="ring-info">
+            <div class="ring-book">Nineteen Eighty-Four</div>
+            <div class="ring-detail">p.186 of 328<br>~3.2 hrs remaining<br>Est. finish: Jul 2</div>
+          </div>
+        </div>
+
+        <!-- reading calendar -->
+        <div class="calendar-section">
+          <div class="cal-header">
+            <span>June 2026</span>
+            <span>14 day streak</span>
+          </div>
+          <div class="cal-grid">
+            <!-- row 1 -->
+            <div class="cal-day">1</div><div class="cal-day">2</div>
+            <div class="cal-day read-light">3</div><div class="cal-day read-mid">4</div>
+            <div class="cal-day read-full">5</div><div class="cal-day read-full">6</div>
+            <div class="cal-day read-mid">7</div>
+            <!-- row 2 -->
+            <div class="cal-day read-full">8</div><div class="cal-day read-full">9</div>
+            <div class="cal-day read-light">10</div><div class="cal-day read-full">11</div>
+            <div class="cal-day read-full">12</div><div class="cal-day read-mid">13</div>
+            <div class="cal-day read-full">14</div>
+            <!-- row 3 -->
+            <div class="cal-day read-full">15</div><div class="cal-day read-full">16</div>
+            <div class="cal-day read-full">17</div><div class="cal-day read-mid">18</div>
+            <div class="cal-day read-full">19</div><div class="cal-day read-full">20</div>
+            <div class="cal-day read-full">21</div>
+            <!-- row 4 -->
+            <div class="cal-day read-full">22</div><div class="cal-day read-full">23</div>
+            <div class="cal-day read-full">24</div><div class="cal-day read-full today">25</div>
+            <div class="cal-day">26</div><div class="cal-day">27</div>
+            <div class="cal-day">28</div>
+          </div>
+        </div>
+
+        <!-- milestones -->
+        <div class="section-title" style="padding-top:14px;">Story milestones</div>
+        <div class="milestone-section">
+          <div class="milestone-item">
+            <div class="ms-dot done"></div>
+            <div class="ms-text">Started reading</div>
+            <div class="ms-pct">0%</div>
+          </div>
+          <div class="milestone-item">
+            <div class="ms-dot done"></div>
+            <div class="ms-text">First quarter</div>
+            <div class="ms-pct">25%</div>
+          </div>
+          <div class="milestone-item">
+            <div class="ms-dot done"></div>
+            <div class="ms-text">Halfway through</div>
+            <div class="ms-pct">50%</div>
+          </div>
+          <div class="milestone-item">
+            <div class="ms-dot next"></div>
+            <div class="ms-text">Three quarters</div>
+            <div class="ms-pct">75%</div>
+          </div>
+          <div class="milestone-item">
+            <div class="ms-dot next"></div>
+            <div class="ms-text">Finished</div>
+            <div class="ms-pct">100%</div>
+          </div>
+        </div>
+
+        <!-- lifetime -->
+        <div class="section-title">All time</div>
+        <div class="lifetime-row">
+          <div class="lt-card">
+            <div class="lt-n">38</div>
+            <div class="lt-l">Books</div>
+          </div>
+          <div class="lt-card">
+            <div class="lt-n">2.4M</div>
+            <div class="lt-l">Words</div>
+          </div>
+          <div class="lt-card">
+            <div class="lt-n">847</div>
+            <div class="lt-l">Hours</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- nav bar -->
+      <div class="nav-bar">
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>
+          Home
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+          Read
+        </div>
+        <div class="nav-item active">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>
+          Stats
+        </div>
+        <div class="nav-item">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="8" r="3"/><path d="M5 20c0-4 2.7-6 6-6s6 2 6 6"/></svg>
+          Profile
+        </div>
+      </div>
+    </div>
+    <div class="screen-label">Stats</div>
+  </div>
+
+</div><!-- /screens -->
+
+</body>
+</html>
