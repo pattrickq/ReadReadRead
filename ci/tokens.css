@@ -7,7 +7,7 @@
   ╚══════════════════════════════════════════════════════╝
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Noto+Serif+JP:wght@300;400;500;600&family=Courier+Prime:wght@400;700&display=swap');
 
 :root {
 
@@ -49,9 +49,11 @@
   /* Use for: headings h1–h3, brand mark, prices, large numbers */
 
   --font-body:    'Noto Serif JP', 'Noto Serif', serif;
-  /* Use for: body copy, UI labels, buttons, inputs, captions */
+  /* Use for: body copy, UI labels, buttons, inputs */
 
-  /* RULE: No third font. If unsure, use --font-body. */
+  --font-small:   'Courier Prime', 'Courier New', monospace;
+  /* Use for: --text-sm (12px) and --text-xs (10px) only
+     Labels, badges, captions, metadata, nav items, tags */
 
 
   /* ── TYPOGRAPHY: Scale ── */
@@ -144,8 +146,13 @@ body {
 /* Typography helpers */
 .font-display  { font-family: var(--font-display); }
 .font-body     { font-family: var(--font-body); }
+.font-small    { font-family: var(--font-small); }
 .italic        { font-style: italic; }
 .bold          { font-weight: var(--weight-bold); }
+
+/* Size + font bundles — always Courier Prime at small sizes */
+.text-xs { font-family: var(--font-small); font-size: var(--text-xs); font-weight: 400; }
+.text-sm { font-family: var(--font-small); font-size: var(--text-sm); font-weight: 400; }
 
 .text-ink      { color: var(--ink); }
 .text-ink-2    { color: var(--ink-2); }
