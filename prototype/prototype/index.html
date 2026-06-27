@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ReadReadRead">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="manifest" href="./manifest.json">
+<title>ReadReadRead — Prototype</title>
+<link rel="stylesheet" href="../ci/tokens.css">
+<style>
+
+  body {
+    background: #EDEAE4;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    gap: 28px;
+  }
+
+  /* top label */
+  .proto-label {
+    font-family: var(--font-small); font-size: 11px; color: #999; letter-spacing: 0.1em;
+    text-align: center;
+  }
+  .proto-label strong { color: #666; }
+
+  /* phone shell */
+  .phone {
+    width: var(--phone-width);
+    height: var(--phone-height);
+    background: var(--paper);
+    border-radius: var(--phone-radius);
+    overflow: hidden;
+    position: relative;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.10),
+      0 0 0 8px #D4CFC8,
+      0 0 0 9px rgba(0,0,0,0.08),
+      0 28px 72px rgba(0,0,0,0.24),
+      0 8px 20px rgba(0,0,0,0.12);
+    flex-shrink: 0;
+  }
+
+  /* screen container — slides horizontally */
+  .screens {
+    position: absolute; inset: 0;
+    display: flex;
+    transition: transform var(--dur-slow) var(--ease-out);
+    width: 400%; /* 4 screens */
+    height: 100%;
+  }
+
+  /* individual screen */
+  .screen {
+    width: 25%;
+    height: 100%;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* scroll area inside each screen */
+  .scroll {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    bottom: 76px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll::-webkit-scrollbar { display: none; }
+
+  /* status bar */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px 0;
+    font-size: 13px; font-weight: 600; color: var(--ink-2);
+    letter-spacing: -0.2px; position: relative; z-index: 3;
+  }
+  .status-icons { display: flex; gap: 5px; align-items: center; }
+  .status-icons svg { width: 14px; height: 14px; }
+
+  /* bottom nav */
+  .nav-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 76px;
+    background: rgba(253,252,248,0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex; justify-content: space-around; align-items: flex-start;
+    padding-top: 10px;
+    z-index: 10;
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-family: var(--font-small); font-size: 10px; font-weight: 400; color: var(--ink-4);
+    cursor: pointer; padding: 0 8px; -webkit-tap-highlight-color: transparent;
+    transition: color var(--dur-fast) var(--ease-out);
+  }
+  .nav-item.active { color: var(--brown); }
+  .nav-item svg { width: 20px; height: 20px; }
+
+  /* ── SHARED ATOMS ── */
+  .section-title {
+    padding: 18px 22px 10px;
+    font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--ink-4);
+  }
+
+  /* ══════════════════════════════
+     SCREEN 1: HOME
+  ══════════════════════════════ */
+  .home-header {
+    padding: 10px 22px 0;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .home-greeting { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--ink); line-height: 1.2; }
+  .home-greeting span { font-weight: 400; font-style: italic; color: var(--ink-3); font-size: 13px; display: block; margin-bottom: 2px; }
+  .avatar { width: 38px; height: 38px; border-radius: var(--radius-full); background: var(--paper-3); display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--accent); font-family: var(--font-display); font-weight: 700; }
+
+  .streak-pill {
+    margin: 14px 22px 0;
+    background: rgba(59,32,16,0.06); border: 1px solid rgba(59,32,16,0.10);
+    border-radius: var(--radius-full); padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .streak-n { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: var(--brown); }
+  .streak-l { font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 1px; }
+  .streak-dots { display: flex; gap: 4px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--paper-3); }
+  .dot.done { background: var(--brown); }
+
+  .book-card {
+    margin: 0 22px;
+    background: var(--paper-2); border: 1px solid rgba(0,0,0,0.06);
+    border-radius: var(--radius-lg); padding: 16px;
+    display: flex; gap: 14px;
+  }
+  .book-cover {
+    width: 54px; height: 76px; border-radius: 6px;
+    background: linear-gradient(145deg, #8B6B4A, #5C4030);
+    flex-shrink: 0; position: relative; overflow: hidden;
+  }
+  .book-cover-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: rgba(0,0,0,0.20); }
+  .book-info { flex: 1; min-width: 0; }
+  .book-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .book-author { font-family: var(--font-small); font-size: 11px; color: var(--ink-4); margin-top: 3px; }
+  .progress-bar { margin-top: 12px; height: 3px; background: var(--paper-3); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--brown); border-radius: 2px; }
+  .progress-label { display: flex; justify-content: space-between; margin-top: 6px; font-family: var(--font-small); font-size: 10px; color: var(--ink-4); }
+  .progress-pct { color: var(--brown); font-weight: 600; }
+
+  .continue-btn {
+    margin: 12px 22px 0;
+    background: var(--brown); color: rgba(253,252,248,0.96);
+    border: none; border-radius: var(--radius-md); padding: 13px;
+    width: calc(100% - 44px);
+    font-family: var(--font-body); font-size: 13px; font-weight: 500;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: opacity var(--dur-fast) var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .continue-btn:active { opacity: 0.75; }
+
+  .stats-row { margin: 14px 22px 0; display: flex; gap: 10px; }
+  .stat-card { flex: 1; background: var(--paper-2); border: 1px solid rgba(0,0,0,0.05); border-radius: var(--radius-md); padding: 12px 10px; text-align: center; }
+  .stat-n { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--ink); }
+  .stat-l { font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--ink-4); margin-top: 3px; }
+
+  .shelf-row { margin: 0 22px; display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; }
+  .shelf-row::-webkit-scrollbar { display: none; }
+  .shelf-book { width: 52px; height: 74px; border-radius: 6px; flex-shrink: 0; }
+
+  /* ══════════════════════════════
+     SCREEN 2: READING
+  ══════════════════════════════ */
+  .read-bg { position: absolute; inset: 0; background: #F5F0E8; }
+
+  .read-top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 22px 0; position: relative; z-index: 2;
+  }
+  .read-meta { text-align: center; flex: 1; }
+  .read-meta-title { font-family: var(--font-small); font-size: 11px; font-weight: 600; color: var(--ink-2); }
+  .read-meta-ch { font-family: var(--font-small); font-size: 10px; color: var(--ink-4); margin-top: 1px; }
+  .icon-btn { width: 30px; height: 30px; border-radius: var(--radius-full); background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; color: var(--ink-3); cursor: pointer; }
+  .icon-btn svg { width: 15px; height: 15px; }
+
+  .read-progress-strip { margin: 12px 22px 0; height: 2px; background: rgba(0,0,0,0.08); border-radius: 1px; position: relative; z-index: 2; }
+  .read-progress-fill { height: 100%; background: var(--accent); border-radius: 1px; width: 62%; }
+  .read-progress-labels { display: flex; justify-content: space-between; margin-top: 5px; font-family: var(--font-small); font-size: 9px; color: var(--ink-4); position: relative; z-index: 2; padding: 0 22px; }
+
+  .read-body { padding: 20px 26px 0; position: relative; z-index: 2; }
+  .read-chapter-label { font-size: 10px; font-style: italic; font-family: var(--font-small); color: var(--accent); margin-bottom: 14px; }
+  .read-text { font-family: var(--font-display); font-size: 15px; line-height: 1.90; color: var(--ink-2); }
+  .read-text p { margin-bottom: 16px; }
+  .highlight { background: rgba(122,98,72,0.12); border-radius: 2px; padding: 0 1px; }
+
+  .read-bottom-bar {
+    position: absolute; bottom: 76px; left: 0; right: 0; padding: 10px 22px;
+    display: flex; justify-content: space-between; align-items: center;
+    background: linear-gradient(0deg, rgba(245,240,232,1) 60%, transparent);
+    z-index: 3;
+  }
+  .read-page-n { font-family: var(--font-small); font-size: 11px; color: var(--ink-4); }
+  .haptic-badge {
+    background: rgba(59,32,16,0.08); border-radius: 10px; padding: 4px 10px;
+    font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--accent-2);
+    display: flex; align-items: center; gap: 5px;
+  }
+  .haptic-badge svg { width: 11px; height: 11px; }
+
+  /* ══════════════════════════════
+     SCREEN 3: AI
+  ══════════════════════════════ */
+  .ai-top { padding: 10px 22px 0; display: flex; align-items: center; gap: 12px; }
+  .ai-avatar {
+    width: 40px; height: 40px; border-radius: var(--radius-full);
+    background: linear-gradient(135deg, #7A6248, #5C4030);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .ai-avatar svg { width: 20px; height: 20px; color: rgba(253,252,248,0.9); }
+  .ai-name { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--ink); }
+  .ai-mode-tag { font-family: var(--font-small); font-size: 11px; font-weight: 400; color: var(--accent); margin-top: 1px; }
+  .spoiler-shield {
+    background: rgba(74,124,89,0.10); border: 1px solid rgba(74,124,89,0.20);
+    border-radius: 10px; padding: 3px 9px;
+    font-family: var(--font-small); font-size: 10px; color: var(--green);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .ai-context { margin: 12px 22px 0; background: rgba(122,98,72,0.07); border: 1px solid rgba(122,98,72,0.12); border-radius: var(--radius-md); padding: 9px 14px; font-family: var(--font-small); font-size: 11px; color: var(--ink-3); line-height: 1.5; font-style: italic; }
+  .ai-context strong { color: var(--accent-2); font-style: normal; }
+
+  .chat-area { padding: 14px 22px 0; display: flex; flex-direction: column; gap: 12px; }
+  .msg { max-width: 88%; font-size: 13px; line-height: 1.65; }
+  .msg-ai { background: var(--paper-2); border: 1px solid rgba(0,0,0,0.06); border-radius: 4px 16px 16px 16px; padding: 11px 13px; color: var(--ink-2); }
+  .msg-user { align-self: flex-end; background: var(--brown); color: rgba(253,252,248,0.92); border-radius: 16px 16px 4px 16px; padding: 10px 13px; }
+  .msg-sender { font-family: var(--font-small); font-size: 11px; color: var(--accent); margin-bottom: 5px; }
+
+  .chat-input-bar {
+    position: absolute; bottom: 76px; left: 0; right: 0;
+    padding: 10px 16px;
+    background: rgba(253,252,248,0.94); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex; gap: 8px; align-items: center; z-index: 5;
+  }
+  .chat-input { flex: 1; background: var(--paper-2); border: 1px solid rgba(0,0,0,0.07); border-radius: 20px; padding: 9px 14px; font-family: var(--font-small); font-size: 12.5px; color: var(--ink-3); }
+  .chat-send { width: 34px; height: 34px; border-radius: var(--radius-full); background: var(--brown); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; }
+  .chat-send svg { width: 15px; height: 15px; color: rgba(253,252,248,0.9); }
+
+  /* ══════════════════════════════
+     SCREEN 4: STATS
+  ══════════════════════════════ */
+  .stats-heading { padding: 10px 22px 0; font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--ink); }
+  .stats-heading span { font-style: italic; font-weight: 400; color: var(--ink-3); }
+
+  .ring-section { margin: 16px 22px 0; background: var(--paper-2); border: 1px solid rgba(0,0,0,0.05); border-radius: var(--radius-lg); padding: 18px; display: flex; align-items: center; gap: 18px; }
+  .ring-wrap { position: relative; width: 78px; height: 78px; flex-shrink: 0; }
+  .ring-wrap svg { width: 78px; height: 78px; transform: rotate(-90deg); }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-pct { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--ink); }
+  .ring-sub { font-family: var(--font-small); font-size: 10px; color: var(--ink-4); margin-top: 1px; }
+  .ring-book { font-family: var(--font-display); font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+  .ring-detail { font-family: var(--font-small); font-size: 11px; color: var(--ink-4); margin-top: 4px; line-height: 1.5; }
+
+  .cal-section { margin: 12px 22px 0; }
+  .cal-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-family: var(--font-small); font-size: 11px; color: var(--ink-4); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-day { aspect-ratio: 1; border-radius: 6px; background: var(--paper-3); display: flex; align-items: center; justify-content: center; font-size: 8.5px; color: var(--ink-4); }
+  .cal-day.rl { background: rgba(122,98,72,0.20); color: var(--accent-2); }
+  .cal-day.rm { background: rgba(122,98,72,0.45); color: white; }
+  .cal-day.rf { background: var(--brown); color: white; }
+  .cal-day.today { outline: 1.5px solid var(--brown); }
+
+  .ms-section { margin: 0 22px; }
+  .ms-item { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .ms-item:last-child { border: none; }
+  .ms-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .ms-dot.done { background: var(--green); }
+  .ms-dot.next { background: var(--paper-3); border: 1.5px solid var(--ink-4); }
+  .ms-text { flex: 1; font-family: var(--font-small); font-size: 12px; color: var(--ink-2); }
+  .ms-pct { font-family: var(--font-small); font-size: 11px; color: var(--ink-4); }
+
+  .lt-row { margin: 12px 22px 0; display: flex; gap: 10px; }
+  .lt-card { flex: 1; background: var(--paper-2); border: 1px solid rgba(0,0,0,0.05); border-radius: var(--radius-md); padding: 12px 10px; text-align: center; }
+  .lt-n { font-family: var(--font-display); font-size: 18px; font-weight: 700; color: var(--ink); }
+  .lt-l { font-family: var(--font-small); font-size: 11px; color: var(--ink-4); margin-top: 3px; }
+
+  /* ── TRANSITION OVERLAY ── */
+  .screen-overlay {
+    position: absolute; inset: 0; background: rgba(253,252,248,0);
+    pointer-events: none; z-index: 20;
+    transition: background var(--dur-fast) var(--ease-out);
+  }
+
+  /* screen nav indicator dots */
+  .dot-nav {
+    display: flex; gap: 6px; justify-content: center;
+  }
+  .dot-nav span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(0,0,0,0.15); transition: background var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-snap);
+  }
+  .dot-nav span.active { background: var(--brown); transform: scale(1.3); }
+
+  /* ── MOBILE: full screen, no phone frame ── */
+  @media (max-width: 600px) {
+    body {
+      background: var(--paper);
+      padding: 0;
+      justify-content: flex-start;
+    }
+    .proto-label { display: none; }
+    .dot-nav { display: none; }
+    .phone {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh; /* dynamic viewport — accounts for browser chrome */
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .nav-bar {
+      height: calc(60px + env(safe-area-inset-bottom));
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .scroll {
+      bottom: calc(60px + env(safe-area-inset-bottom));
+    }
+    .status-bar {
+      padding-top: calc(14px + env(safe-area-inset-top));
+    }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="proto-label"><strong>ReadReadRead</strong> — Interactive Prototype v0.1</div>
+
+<div class="phone" id="phone">
+  <div class="screens" id="screens">
+
+    <!-- ── SCREEN 1: HOME ── -->
+    <div class="screen" id="s-home">
+      <div class="scroll">
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg>
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg>
+          </div>
+        </div>
+
+        <div class="home-header">
+          <div class="home-greeting"><span>Good morning</span>Pat</div>
+          <div class="avatar">P</div>
+        </div>
+
+        <div class="streak-pill">
+          <span style="font-size:18px;">🔥</span>
+          <div style="flex:1;">
+            <div class="streak-n">14 days</div>
+            <div class="streak-l">Reading streak</div>
+          </div>
+          <div class="streak-dots">
+            <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+            <div class="dot done"></div><div class="dot done"></div><div class="dot done"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+
+        <div class="section-title">Now reading</div>
+        <div class="book-card">
+          <div class="book-cover"><div class="book-cover-spine"></div></div>
+          <div class="book-info">
+            <div class="book-title">Nineteen Eighty-Four</div>
+            <div class="book-author">George Orwell</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
+            <div class="progress-label"><span>p. 186 / 328</span><span class="progress-pct">62%</span></div>
+          </div>
+        </div>
+
+        <button class="continue-btn" onclick="goTo(1)">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>
+          Continue reading
+        </button>
+
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-n">2.4M</div><div class="stat-l">Words read</div></div>
+          <div class="stat-card"><div class="stat-n">38</div><div class="stat-l">Books</div></div>
+          <div class="stat-card"><div class="stat-n">22</div><div class="stat-l">This year</div></div>
+        </div>
+
+        <div class="section-title">Up next</div>
+        <div class="shelf-row">
+          <div class="shelf-book" style="background:linear-gradient(145deg,#4A6C8C,#2E4A6A)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#6B8C4A,#3A5A2E)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#8C6B4A,#5A3E2E)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#6A4A7A,#3E2A5A)"></div>
+          <div class="shelf-book" style="background:linear-gradient(145deg,#7A4A4A,#5A2A2A)"></div>
+        </div>
+        <div style="height:24px;"></div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item active" onclick="goTo(0)">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>Home
+        </div>
+        <div class="nav-item" onclick="goTo(1)">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>Read
+        </div>
+        <div class="nav-item" onclick="goTo(2)">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="10" r="4"/><path d="M5 6C6 3 16 3 17 6"/><path d="M7 19c0-3 1.5-5 4-5s4 2 4 5"/></svg>AI
+        </div>
+        <div class="nav-item" onclick="goTo(3)">
+          <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>Stats
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 2: READING ── -->
+    <div class="screen" id="s-read">
+      <div class="read-bg"></div>
+
+      <div style="position:relative;z-index:2;">
+        <div class="status-bar"><span>9:41</span><div class="status-icons"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg></div></div>
+      </div>
+
+      <div class="read-top-bar">
+        <div class="icon-btn" onclick="goTo(0)"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 12L6 8l4-4"/></svg></div>
+        <div class="read-meta"><div class="read-meta-title">Nineteen Eighty-Four</div><div class="read-meta-ch">Chapter III</div></div>
+        <div class="icon-btn"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="4" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="8" cy="8" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="8" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+      </div>
+
+      <div class="read-progress-strip"><div class="read-progress-fill"></div></div>
+      <div class="read-progress-labels"><span>p. 186</span><span>62%</span><span>p. 328</span></div>
+
+      <div class="scroll" style="top:82px;">
+        <div class="read-body">
+          <div class="read-chapter-label">Part Two, Chapter III</div>
+          <div class="read-text">
+            <p>The blackness was total. He did not know whether he was facing the telescreen or away from it. If he was facing it the guards could see him.</p>
+            <p>He lay as still as he could. He thought of <span class="highlight">O'Brien. He was not certain when he had first become</span> aware of the possibility of betrayal. The Party had told him that it had reformed him, and he believed it.</p>
+            <p>Outside, even through the shut window pane, the world looked cold. Down in the street little eddies of wind were whirling dust and torn paper into spirals, and though the sun was shining and the sky was a harsh blue there seemed to be no colour in anything.</p>
+            <p>The telescreen was giving forth an ear-splitting whistle which continued on the same note for thirty seconds. It was nought seven fifteen, getting-up time for office workers.</p>
+          </div>
+        </div>
+        <div style="height:100px;"></div>
+      </div>
+
+      <div class="read-bottom-bar">
+        <div class="read-page-n">186 of 328</div>
+        <div class="haptic-badge"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M2 6 C3 4, 4 4, 5 6 S7 8, 8 6 S10 4, 11 6"/></svg>Haptic on</div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item" onclick="goTo(0)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>Home</div>
+        <div class="nav-item active" onclick="goTo(1)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>Read</div>
+        <div class="nav-item" onclick="goTo(2)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="10" r="4"/><path d="M5 6C6 3 16 3 17 6"/><path d="M7 19c0-3 1.5-5 4-5s4 2 4 5"/></svg>AI</div>
+        <div class="nav-item" onclick="goTo(3)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>Stats</div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 3: AI ── -->
+    <div class="screen" id="s-ai">
+      <div class="scroll" style="bottom:130px;">
+        <div class="status-bar"><span>9:41</span><div class="status-icons"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg></div></div>
+
+        <div class="ai-top">
+          <div class="ai-avatar"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="11" cy="10" r="4"/><path d="M5 6C6 3 16 3 17 6"/><path d="M7 19c0-3 1.5-5 4-5s4 2 4 5"/></svg></div>
+          <div style="flex:1;"><div class="ai-name">The Scholar</div><div class="ai-mode-tag">Expert mode</div></div>
+          <div class="spoiler-shield"><svg viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 1a4 4 0 0 0 0 8 4 4 0 0 0 0-8zm0 2v2.5l1.5 1"/></svg>p.186 safe</div>
+        </div>
+
+        <div class="ai-context">Currently: <strong>1984, Part Two Ch. III</strong> · p.186 of 328</div>
+
+        <div class="chat-area">
+          <div class="msg msg-ai"><div class="msg-sender">The Scholar</div>The passage you just read is often cited as Orwell's most direct commentary on psychological control. The "doublethink" mechanism mirrors Koestler's <em>Darkness at Noon</em>, published just four years prior.</div>
+          <div class="msg msg-user">Why does Winston keep trusting O'Brien even when something feels off?</div>
+          <div class="msg msg-ai"><div class="msg-sender">The Scholar</div>Classic traumatic bonding. O'Brien represents the seductive certainty Winston craves. The Party doesn't just punish dissent — it offers belonging as the alternative.</div>
+          <div class="msg msg-user">That's bleak</div>
+          <div class="msg msg-ai"><div class="msg-sender">The Scholar</div>Orwell knew it from experience. He described writing the book as "a horrible job" — he was dying of TB while finishing it. The despair in the prose is real.</div>
+        </div>
+        <div style="height:20px;"></div>
+      </div>
+
+      <div class="chat-input-bar">
+        <div class="chat-input">Ask about this passage…</div>
+        <div class="chat-send"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2L2 7l5 2 2 5 5-12z"/></svg></div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item" onclick="goTo(0)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>Home</div>
+        <div class="nav-item" onclick="goTo(1)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>Read</div>
+        <div class="nav-item active" onclick="goTo(2)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="10" r="4"/><path d="M5 6C6 3 16 3 17 6"/><path d="M7 19c0-3 1.5-5 4-5s4 2 4 5"/></svg>AI</div>
+        <div class="nav-item" onclick="goTo(3)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>Stats</div>
+      </div>
+    </div>
+
+    <!-- ── SCREEN 4: STATS ── -->
+    <div class="screen" id="s-stats">
+      <div class="scroll">
+        <div class="status-bar"><span>9:41</span><div class="status-icons"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 5C3.5 2.5 10.5 2.5 13 5"/><path d="M3 7.5C4.8 5.7 9.2 5.7 11 7.5"/><path d="M5.5 10C6.3 9.2 7.7 9.2 8.5 10"/><circle cx="7" cy="12" r="0.8" fill="currentColor"/></svg><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="10" height="6" rx="1.5"/><path d="M11 6.5h1.5a.5.5 0 0 1 0 1H11"/><rect x="2" y="5" width="6" height="4" rx="0.5" fill="currentColor" stroke="none"/></svg></div></div>
+
+        <div class="stats-heading">Progress<br><span>Nineteen Eighty-Four</span></div>
+
+        <div class="ring-section">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 78 78"><circle cx="39" cy="39" r="31" fill="none" stroke="#EDE8DF" stroke-width="7"/><circle cx="39" cy="39" r="31" fill="none" stroke="#3B2010" stroke-width="7" stroke-dasharray="194.8" stroke-dashoffset="74" stroke-linecap="round"/></svg>
+            <div class="ring-center"><div class="ring-pct">62%</div><div class="ring-sub">done</div></div>
+          </div>
+          <div><div class="ring-book">Nineteen Eighty-Four</div><div class="ring-detail">p.186 of 328<br>~3.2 hrs remaining<br>Est. finish: Jul 2</div></div>
+        </div>
+
+        <div class="cal-section">
+          <div class="cal-header"><span>June 2026</span><span>14 day streak</span></div>
+          <div class="cal-grid">
+            <div class="cal-day">1</div><div class="cal-day">2</div><div class="cal-day rl">3</div><div class="cal-day rm">4</div><div class="cal-day rf">5</div><div class="cal-day rf">6</div><div class="cal-day rm">7</div>
+            <div class="cal-day rf">8</div><div class="cal-day rf">9</div><div class="cal-day rl">10</div><div class="cal-day rf">11</div><div class="cal-day rf">12</div><div class="cal-day rm">13</div><div class="cal-day rf">14</div>
+            <div class="cal-day rf">15</div><div class="cal-day rf">16</div><div class="cal-day rf">17</div><div class="cal-day rm">18</div><div class="cal-day rf">19</div><div class="cal-day rf">20</div><div class="cal-day rf">21</div>
+            <div class="cal-day rf">22</div><div class="cal-day rf">23</div><div class="cal-day rf">24</div><div class="cal-day rf today">25</div><div class="cal-day">26</div><div class="cal-day">27</div><div class="cal-day">28</div>
+          </div>
+        </div>
+
+        <div class="section-title">Story milestones</div>
+        <div class="ms-section">
+          <div class="ms-item"><div class="ms-dot done"></div><div class="ms-text">Started reading</div><div class="ms-pct">0%</div></div>
+          <div class="ms-item"><div class="ms-dot done"></div><div class="ms-text">First quarter</div><div class="ms-pct">25%</div></div>
+          <div class="ms-item"><div class="ms-dot done"></div><div class="ms-text">Halfway through</div><div class="ms-pct">50%</div></div>
+          <div class="ms-item"><div class="ms-dot next"></div><div class="ms-text">Three quarters</div><div class="ms-pct">75%</div></div>
+          <div class="ms-item"><div class="ms-dot next"></div><div class="ms-text">Finished</div><div class="ms-pct">100%</div></div>
+        </div>
+
+        <div class="section-title">All time</div>
+        <div class="lt-row">
+          <div class="lt-card"><div class="lt-n">38</div><div class="lt-l">Books</div></div>
+          <div class="lt-card"><div class="lt-n">2.4M</div><div class="lt-l">Words</div></div>
+          <div class="lt-card"><div class="lt-n">847</div><div class="lt-l">Hours</div></div>
+        </div>
+        <div style="height:24px;"></div>
+      </div>
+
+      <div class="nav-bar">
+        <div class="nav-item" onclick="goTo(0)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 9L11 3l8 6v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M8 21V11h6v10"/></svg>Home</div>
+        <div class="nav-item" onclick="goTo(1)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4h10l4 4v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1Z"/><path d="M14 4v5h5"/><line x1="7" y1="12" x2="15" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>Read</div>
+        <div class="nav-item" onclick="goTo(2)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="10" r="4"/><path d="M5 6C6 3 16 3 17 6"/><path d="M7 19c0-3 1.5-5 4-5s4 2 4 5"/></svg>AI</div>
+        <div class="nav-item active" onclick="goTo(3)"><svg viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>Stats</div>
+      </div>
+    </div>
+
+  </div><!-- /screens -->
+</div><!-- /phone -->
+
+<div class="dot-nav" id="dots">
+  <span class="active"></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
+<script>
+  let current = 0;
+  const total = 4;
+  const screensEl = document.getElementById('screens');
+  const dots = document.querySelectorAll('#dots span');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  function goTo(index) {
+    current = index;
+    screensEl.style.transform = `translateX(-${index * 25}%)`;
+
+    // update dots
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+    // update all nav bars
+    document.querySelectorAll('.nav-item').forEach((item, i) => {
+      // each nav bar has 4 items; item i%4 maps to screen
+      item.classList.toggle('active', i % 4 === index);
+    });
+  }
+
+  // swipe support
+  let startX = 0;
+  const phone = document.getElementById('phone');
+
+  phone.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+  phone.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) {
+      if (dx < 0 && current < total - 1) goTo(current + 1);
+      if (dx > 0 && current > 0) goTo(current - 1);
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
